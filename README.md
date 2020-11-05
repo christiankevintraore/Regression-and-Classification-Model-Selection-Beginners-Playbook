@@ -1,14 +1,12 @@
 # Regression and Classification model selection playbook
 
 ## A beginners playbook to determine the best regression or classification model applied to a dataset.
+
+### The goal of this project is to automate Regression and Classification model selection through a simple command line.
+
 This tool was inspired by the great course of [Machine Learning A-Z™: Hands-On Python & R In Data Science](https://udemy.com/course/machinelearning/), made by [Kirill EREMENKO](https://udemy.com/user/kirilleremenko/) and [Hadelin DE PONTEVES](https://udemy.com/user/hadelin-de-ponteves/).\
 Thanks a lot, I really enjoyed it -:)\
 Also notice that the datasets, for test purpose, were took from the provided resources of this course.
-<br>
-
-### The goal of this tool is to automate Regression and Classification model selection through a simple command line.
-<br>
-<br>
 
 ## Command samples
 From the root directory of this project :
@@ -55,7 +53,6 @@ optional arguments:
   -nbPredictionLinesToShow NBPREDICTIONLINESTOSHOW
                         Indicates the number of lines to display for the comparison table (default: 10), only applicable with -nbPredictionLinesToShow parameter
 ```
-<br>
 
 # 2. Display the R2 score table descendent sorted
 `python3 src/regression_model_selection.py 'src/data/Data-For-Regression.csv'`\
@@ -79,7 +76,6 @@ Output :
 | Decision Tree Regression   | 0.92290587417794101022 |
 +----------------------------+------------------------+
 ```
-<br>
 
 # 3. See some predictions
 `python3 src/regression_model_selection.py 'src/data/Data-For-Regression.csv' -featureScaleDependentVariables -showPredictionsFor MLR POLY SVR DTR RFR -nbPredictionLinesToShow 3`\
@@ -155,7 +151,6 @@ Output :
 | 14.860 | 43.140 | 1019.210 | 99.140 | 461.140 | 463.020      |
 +--------+--------+----------+--------+---------+--------------+
 ```
-<br>
 
 # 4. Make some predictions
 `python3 src/regression_model_selection.py 'src/data/Data-For-Regression.csv' -featureScaleDependentVariables -predict 23.04 59.43 1010.23 68.99 -predict 18.5 51.43 1010.82 92.04`\
@@ -221,16 +216,12 @@ Output :
 | 18.500 | 51.430 | 1010.820 | 92.040 | 456.378      |
 +--------+--------+----------+--------+--------------+
 ```
-<br>
-<br>
 
 # License
 
 ## MIT License
-<br>
 
 Copyright (c) 2020 Christian Kevin TRAORÉ
-<br>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
