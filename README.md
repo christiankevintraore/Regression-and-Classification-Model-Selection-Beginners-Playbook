@@ -8,6 +8,17 @@ This tool was inspired by the great course of [Machine Learning A-Z™: Hands-On
 Thanks a lot, I really enjoyed it -:)\
 Also notice that the datasets, for test purpose, were took from the provided resources of this course.
 
+## Dataset Template
+* *To work properly with this tool, your dataset should have consecutive independent variable columns ; and only one dependant variable column.*
+* *It is also a good idea to always have headers, it helps to identify columns on printed tables.*
+
+## Required python modules
+Depending of modules already installed in your environment ; you may have to install one or several of these modules :
+* Scikit-Learn :  ```pip install -U scikit-learn```
+* TextTable :     ```pip install -U texttable```
+* Numpy :         ```pip install -U numpy```
+* Pandas :        ```pip install -U pandas```
+
 ## Command samples
 From the root directory of this project :
 # 1. Display the helper
