@@ -38,7 +38,7 @@ EXISTING_REGRESSORS = {
 }
 
 def main():
-    """...
+    """Regression main process.
 
     """
     # Get input parameters for dataset management

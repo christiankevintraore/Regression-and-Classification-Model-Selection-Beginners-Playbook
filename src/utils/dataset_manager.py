@@ -33,8 +33,10 @@ class DatasetManager:
 
         """
         self.params = params
+        self.allHeaders = None
         self.dependentVariableHeader = None
-        self.headers = None
+        self.independentVariablesHeader = None
+        self.headersToDisplay = None
 
     def load_data(self):
         """Initialize independent variables tables into X variable, and the dependent one into Y.
@@ -64,7 +66,8 @@ class DatasetManager:
         self.split_data()
     
     def insert_header_to_top(self, numpyArray:np.ndarray, appendToDependentVariablesHeader='', additionalHeaders=None):
-        headers = self.select_dataset_header(appendToDependentVariablesHeader)
+        headers = self.get_independent_variables_header() + [self.get_dependent_variable_header(appendToDependentVariablesHeader)]
+        
         if additionalHeaders is not None:
             headers = headers + additionalHeaders
 
@@ -72,24 +75,36 @@ class DatasetManager:
         result.insert(0, headers)
         return result
 
-    def select_dataset_header(self, appendToDependentVariablesHeader=''):
-        if(self.headers is not None):
-            return self.headers
+    def get_independent_variables_header(self):
+        if(self.independentVariablesHeader is not None):
+            return self.independentVariablesHeader
 
-        allHeaders = list(self._DatasetManager__dataset.columns)
-        headers = allHeaders[self.params.independentVariablesStartIndex:self.params.independentVariablesEndIndex]
-        headers.append(self.get_dependent_variable_header(appendToDependentVariablesHeader))
-        self.headers = headers
-        return headers
+        allHeaders = self.get_all_headers()
+        independentVariablesHeader = allHeaders[self.params.independentVariablesStartIndex:self.params.independentVariablesEndIndex]
+
+        self.independentVariablesHeader = independentVariablesHeader
+        return independentVariablesHeader
 
     def get_dependent_variable_header(self, appendToDependentVariablesHeader=''):
         if(self.dependentVariableHeader is not None):
             return appendToDependentVariablesHeader + self.dependentVariableHeader
 
-        allHeaders = list(self._DatasetManager__dataset.columns)
+        allHeaders = self.get_all_headers()
         dependentVariableHeader = allHeaders[self.params.dependentVariableColumnIndex]
+
         self.dependentVariableHeader = dependentVariableHeader
         return appendToDependentVariablesHeader + dependentVariableHeader
+    
+    def get_all_headers(self):
+        if(self.allHeaders is not None):
+            return self.allHeaders
+
+        allHeaders = list(self._DatasetManager__dataset.columns)
+        for i in range(len(allHeaders)):
+            allHeaders[i] = str(allHeaders[i])
+
+        self.allHeaders = allHeaders
+        return allHeaders
 
 
 
