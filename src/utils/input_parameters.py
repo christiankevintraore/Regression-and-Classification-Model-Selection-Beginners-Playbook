@@ -66,7 +66,7 @@ def get_input_parameters(regressorsCode):
     argumentParser.add_argument('-dependentVariableColumnIndex', type=int, default=DEFAULT_DEPENDENT_VARIABLE_COLUMN_INDEX, help="Indicates the unique dependent variable column index (default: {0})".format(DEFAULT_DEPENDENT_VARIABLE_COLUMN_INDEX))
     argumentParser.add_argument('-independentVariablesStartIndex', type=int, default=DEFAULT_INDEPENDENT_VARIABLES_START_INDEX, help="Indicates independent variables start column index (default: {0})".format(DEFAULT_INDEPENDENT_VARIABLES_START_INDEX))
     argumentParser.add_argument('-independentVariablesEndIndex', type=int, default=DEFAULT_INDEPENDENT_VARIABLES_END_INDEX, help="Indicates independent variables end column index (default: {0})".format(DEFAULT_INDEPENDENT_VARIABLES_END_INDEX))
-    argumentParser.add_argument('-splitTestSize', type=int, default=DEFAULT_SPLIT_TEST_SIZE, help="Indicates the proportion of the dataset to include in the test sets (default: {0})".format(DEFAULT_SPLIT_TEST_SIZE))
+    argumentParser.add_argument('-splitTestSize', type=float, default=DEFAULT_SPLIT_TEST_SIZE, help="Indicates the proportion of the dataset to include in the test sets (default: {0})".format(DEFAULT_SPLIT_TEST_SIZE))
     argumentParser.add_argument('-splitRandomState', type=int, default=DEFAULT_SPLIT_RANDOM_STATE, help="Controls the shuffling applied to the data before applying the split (default: {0})".format(DEFAULT_SPLIT_RANDOM_STATE))
     argumentParser.add_argument('-featureScaleDependentVariables', action=get_action(DEFAULT_FEATURE_SCALE_DEPENDENT_VARIABLES),\
         help="Indicates if the unique dependent variable should be feature scaled, if needed for the regressor (default: {0})".format(DEFAULT_FEATURE_SCALE_DEPENDENT_VARIABLES))
