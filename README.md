@@ -66,7 +66,7 @@ optional arguments:
 ```
 
 # 2. Display the R2 score table descendent sorted
-`python3 src/regression_model_selection.py 'src/data/Data-For-Regression.csv'`\
+`python3 src/regression_model_selection.py 'src/data/Data-For-Regression.csv' -featureScaleDependentVariables`\
 \
 Remember to always add the *-featureScaleDependentVariables* option to indicate that the dependent variables column should be feature scaled. There is not yet an auto detection for that\
 It is the minimum output of this script.\
