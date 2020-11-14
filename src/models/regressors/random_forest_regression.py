@@ -22,15 +22,8 @@ class RandomForestRegressor(gr.GenericRegressor):
 
         """
         # Training the Random Forest Regression model on the Training set
-        regressor = sklRandomForestRegressor(n_estimators = 10, random_state = 0)
-        regressor.fit(self.datasetManager.X_train, self.datasetManager.y_train)
-        self.regressor = regressor
-
-        # Predicting the Test set results
-        self.y_pred = regressor.predict(self.datasetManager.X_test)
-        
-        # Returning the process result : the regression type and the predicted dependent variables set
-        return ["Random Forest Regression", self.get_r2_score(self.datasetManager.y_test, self.y_pred)]
+        self.regressor = sklRandomForestRegressor(n_estimators = 10, random_state = 0)
+        return self.evaluate_from_dataset_manager_and_regressor("Random Forest Regression", self.regressor)
 
     def predict(self):
         """Makes some predictions with Random Forest Regression model.

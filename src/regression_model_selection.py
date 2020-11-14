@@ -14,6 +14,7 @@ Desirable features :
 import utils.dataset_manager as dm
 import utils.input_parameters as ip
 from texttable import Texttable
+import models.common.common_model_selection as cms
 # Regressors
 from models.regressors.multiple_linear_regression import MultipleLinearRegressor as MLRReg
 from models.regressors.polynomial_regression import PolynomialRegressor as PolyReg
@@ -42,61 +43,33 @@ def main():
 
     """
     # Get input parameters for dataset management
-    inputParameters = ip.get_input_parameters(get_existing_regressors_code())
+    inputParameters = ip.get_input_parameters('regressor', cms.get_dictionary_codes(EXISTING_REGRESSORS))
 
     # Load the data
     datasetManager = dm.DatasetManager(inputParameters)
     datasetManager.load_and_split_data()
 
     # Instantiate the regressors dictionary
-    regressorsDictionary = get_regressors(datasetManager)
+    regressorsDictionary = cms.instantiate_models(EXISTING_REGRESSORS, datasetManager)
 
     # Get the evaluations
-    evaluations = evaluate_and_sort_regressors(regressorsDictionary.values())
+    evaluations = cms.evaluate_and_sort_models(regressorsDictionary.values(), get_R2_score)
     
     # Print evaluations
     print_evaluations(evaluations.copy())
 
+    modelName = 'regressor'
     # Predict from users input
     if inputParameters.predict is not None:
         predictLambda = lambda regressor : regressor.predict()
-        predictions = predict_from_lambda(get_regressors_for_prediction(regressorsDictionary, inputParameters.predictOnly), predictLambda)
-        print_predictions(datasetManager, predictions, appendToDependentVariablesHeader='Predicted ')
+        predictions = cms.predict_from_lambda(cms.get_models_for_prediction(modelName, regressorsDictionary, inputParameters.predictOnly), predictLambda)
+        cms.print_predictions(datasetManager, predictions, appendToDependentVariablesHeader='Predicted ')
 
     # Display predictions comparison
     if inputParameters.showPredictionsFor is not None:
         predictLambda = lambda regressor : regressor.predictions_relevance()
-        predictions = predict_from_lambda(get_regressors_for_prediction(regressorsDictionary, inputParameters.showPredictionsFor), predictLambda)
-        print_predictions(datasetManager, predictions, additionalHeaders=[ "Predicted {0}".format(datasetManager.get_dependent_variable_header()) ])
-
-
-
-def get_regressors(datasetManager):
-    # To avoid processing a specific regressor, feel free to comment the concerned line
-    regressors = {}
-    for regressorDefinition in EXISTING_REGRESSORS.items():
-        regressors[regressorDefinition[0]] = regressorDefinition[1](datasetManager)
-    return regressors
-
-
-
-def evaluate_and_sort_regressors(regressors):
-    # Training the regressors
-    evaluations = []
-    for regressor in regressors:
-        evaluations.append(regressor.evaluate())
-
-    # Descendent sorting of evaluations by R2 score
-    evaluations.sort(key=get_R2_score, reverse=True)
-    return evaluations
-
-
-
-def predict_from_lambda(regressors, predictLambda):
-    predictions = []
-    for regressor in regressors:
-        predictions.append(predictLambda(regressor))
-    return predictions
+        predictions = cms.predict_from_lambda(cms.get_models_for_prediction(modelName, regressorsDictionary, inputParameters.showPredictionsFor), predictLambda)
+        cms.print_predictions(datasetManager, predictions, additionalHeaders=[ "Predicted {0}".format(datasetManager.get_dependent_variable_header()) ])
 
 
 
@@ -105,47 +78,15 @@ def print_evaluations(evaluations):
     for evaluation in evaluations:
         evaluation[1] = "{:.20f}".format(evaluation[1])
 
-    predictionTexttable = Texttable()
-    predictionTexttable.set_cols_dtype(['t', 't'])
-    evaluations.insert(0, ["Regression Type", "R2 Score"])
+    predictionTexttable = cms.get_text_table(2)
+    evaluations.insert(0, ["Regression Model", "R2 Score"])
     predictionTexttable.add_rows(evaluations)
     print(predictionTexttable.draw())
 
 
 
-def print_predictions(datasetManager, predictions, appendToDependentVariablesHeader='', additionalHeaders=None):
-    # Printing predictions
-    for prediction in predictions:
-        print("\n      {0}".format(prediction[0]))
-        predictionTexttable = Texttable()
-        predictionTexttable.add_rows(datasetManager.insert_header_to_top(prediction[1], appendToDependentVariablesHeader, additionalHeaders))
-        print(predictionTexttable.draw())
-
-
-
 def get_R2_score(evaluation):
     return evaluation[1]
-
-
-
-def get_existing_regressors_code():
-    return list(EXISTING_REGRESSORS.keys())
-
-
-
-def get_regressors_for_prediction(regressorsDictionary, codesOfDesiredRegressors):
-    if codesOfDesiredRegressors is None:
-        return regressorsDictionary.values()
-
-    allRegressorsCode = list(regressorsDictionary.keys())
-    regressors = []
-    for regressorCode in codesOfDesiredRegressors:
-        if regressorCode not in allRegressorsCode:
-            raise AttributeError("Invalid regressor code for prediction : '{0}', expected codes {1}".format(regressorCode, allRegressorsCode))
-
-        regressors.append(regressorsDictionary[regressorCode])
-
-    return regressors
 
 
 

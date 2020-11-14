@@ -15,7 +15,6 @@ Desirable features :
 
 #### Libraries
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import utils.input_parameters as ip
@@ -65,15 +64,14 @@ class DatasetManager:
         self.load_data()
         self.split_data()
     
-    def insert_header_to_top(self, numpyArray:np.ndarray, appendToDependentVariablesHeader='', additionalHeaders=None):
+    def insert_header_to_top(self, elements, appendToDependentVariablesHeader='', additionalHeaders=None):
         headers = self.get_independent_variables_header() + [self.get_dependent_variable_header(appendToDependentVariablesHeader)]
-        
+
         if additionalHeaders is not None:
             headers = headers + additionalHeaders
 
-        result = numpyArray.tolist()
-        result.insert(0, headers)
-        return result
+        elements.insert(0, headers)
+        return elements
 
     def get_independent_variables_header(self):
         if(self.independentVariablesHeader is not None):

@@ -22,15 +22,8 @@ class DecisionTreeRegressor(gr.GenericRegressor):
 
         """
         # Training the Decision Tree Regression model on the Training set
-        regressor = sklDecisionTreeRegressor(random_state = 0)
-        regressor.fit(self.datasetManager.X_train, self.datasetManager.y_train)
-        self.regressor = regressor
-
-        # Predicting the Test set results
-        self.y_pred = regressor.predict(self.datasetManager.X_test)
-        
-        # Returning the process result : the regression type and the predicted dependent variables set
-        return ["Decision Tree Regression", self.get_r2_score(self.datasetManager.y_test, self.y_pred)]
+        self.regressor = sklDecisionTreeRegressor(random_state = 0)
+        return self.evaluate_from_dataset_manager_and_regressor("Decision Tree Regression", self.regressor)
 
     def predict(self):
         """Makes some predictions with Decision Tree Regression model.
