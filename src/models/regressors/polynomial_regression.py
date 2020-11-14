@@ -23,16 +23,14 @@ class PolynomialRegressor(gr.GenericRegressor):
 
         """
         # Training the Polynomial Regression model on the Training set
-        poly_reg = PolynomialFeatures(degree = 4)
-        X_poly = poly_reg.fit_transform(self.datasetManager.X_train)
-        self.poly_reg = poly_reg
+        self.poly_reg = PolynomialFeatures(degree = 4)
+        X_poly = self.poly_reg.fit_transform(self.datasetManager.X_train)
 
-        regressor = LinearRegression()
-        regressor.fit(X_poly, self.datasetManager.y_train)
-        self.regressor = regressor
+        self.regressor = LinearRegression()
+        self.regressor.fit(X_poly, self.datasetManager.y_train)
 
         # Predicting the Test set results
-        self.y_pred = regressor.predict(poly_reg.transform(self.datasetManager.X_test))
+        self.y_pred = self.regressor.predict(self.poly_reg.transform(self.datasetManager.X_test))
         
         # Returning the process result : the regression type and the predicted dependent variables set
         return ["Polynomial Regression", self.get_r2_score(self.datasetManager.y_test, self.y_pred)]

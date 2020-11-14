@@ -28,15 +28,15 @@ class SupportVectorRegressor(gr.GenericRegressor):
         featureScaleDependentVariables = self.datasetManager.params.featureScaleDependentVariables
 
         # Feature Scaling
-        sc_X, X_train = dm.do_feature_scaling(X_train)
+        X_scaler, X_train = dm.do_feature_scaling(X_train)
         if featureScaleDependentVariables:
-            sc_y, y_train = dm.do_feature_scaling(y_train)
+            y_scaler, y_train = dm.do_feature_scaling(y_train)
         else:
-            sc_y = None
+            y_scaler = None
             y_train = self.datasetManager.y_train
         
-        self.sc_X = sc_X
-        self.sc_y = sc_y
+        self.X_scaler = X_scaler
+        self.y_scaler = y_scaler
 
         # Training the SVR model on the training set
         regressor = SVR(kernel = 'rbf')
@@ -44,7 +44,7 @@ class SupportVectorRegressor(gr.GenericRegressor):
         self.regressor = regressor
 
         # Predicting the Test set results
-        self.y_pred = sc_y.inverse_transform(regressor.predict(sc_X.transform(X_test))) if featureScaleDependentVariables else regressor.predict(X_test)
+        self.y_pred = y_scaler.inverse_transform(regressor.predict(X_scaler.transform(X_test))) if featureScaleDependentVariables else regressor.predict(X_test)
         
         # Returning the process result : the regression type and the predicted dependent variables set
         return ["Support Vector Regression", self.get_r2_score(y_test, self.y_pred)]
@@ -53,7 +53,7 @@ class SupportVectorRegressor(gr.GenericRegressor):
         """Makes some predictions with Support Vector Regression model.
 
         """
-        predictLambda = lambda valuesToPredict : self.sc_y.inverse_transform(self.regressor.predict(self.sc_X.transform(valuesToPredict)))\
+        predictLambda = lambda valuesToPredict : self.y_scaler.inverse_transform(self.regressor.predict(self.X_scaler.transform(valuesToPredict)))\
             if self.datasetManager.params.featureScaleDependentVariables else self.regressor.predict(valuesToPredict)
         
         return ["Support Vector Regression predictions", super().predict_user_input_variables(predictLambda)]
