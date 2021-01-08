@@ -2,11 +2,16 @@
 
 ## A beginners playbook to determine the best regression or classification model applied to a dataset.
 
-### The goal of this project is to automate Regression and Classification model selection through a simple command line.
+### The goal of this project is to automate Regression or Classification model selection through a simple command line.
 
 This tool was inspired by the great course of [Machine Learning A-Z™: Hands-On Python & R In Data Science](https://udemy.com/course/machinelearning/), made by [Kirill EREMENKO](https://udemy.com/user/kirilleremenko/) and [Hadelin DE PONTEVES](https://udemy.com/user/hadelin-de-ponteves/).\
 Thanks a lot, I really enjoyed it -:)\
 Also notice that the datasets, for test purpose, were took from the provided resources of this course.
+
+## Main upcoming features
+* Direct data manipulation and exportation through input parameters (in few days).
+* Data preprocessing : handling missing data and categorical features encoding through several predefined algorithms (in few days).
+* Automatic tuning of Regressors and Classifiers input parameters to find the best accuracy scores (next big push on February or March).
 
 ## Dataset Template
 * *To work properly with this tool, your dataset should have consecutive independent variable columns ; and only one dependant variable column.*
