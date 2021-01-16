@@ -10,12 +10,12 @@ Desirable features :
 
 #### Libraries
 from sklearn.naive_bayes import GaussianNB
-import models.classifiers.generic_classifier as gc
+from models.classifiers.generic_classifier import GenericClassifier
 
 
 
 #### Main NaiveBayesClassifier class
-class NaiveBayesClassifier(gc.GenericClassifier):
+class NaiveBayesClassifier(GenericClassifier):
 
     def evaluate(self):
         """Applies the Naive Bayes Classification model on the dataset.
@@ -37,4 +37,6 @@ class NaiveBayesClassifier(gc.GenericClassifier):
         """Returns a comparison table for Naive Bayes Classification model.
 
         """
-        return ["Naive Bayes Classification predictions comparison", super().truncate_predictions_relevance(self.X_scaler.inverse_transform(self.X_test), self.datasetManager.y_test, self.y_pred)]
+        return ["Naive Bayes Classification predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, self.y_pred)]

@@ -10,12 +10,12 @@ Desirable features :
 
 #### Libraries
 from sklearn.linear_model import LinearRegression
-import models.regressors.generic_regressor as gr
+from models.regressors.generic_regressor import GenericRegressor
 
 
 
 #### Main MultipleLinearRegressor class
-class MultipleLinearRegressor(gr.GenericRegressor):
+class MultipleLinearRegressor(GenericRegressor):
 
     def evaluate(self):
         """Applies the Multiple Linear Regression model on the dataset.
@@ -29,7 +29,8 @@ class MultipleLinearRegressor(gr.GenericRegressor):
         """Makes some predictions with Multiple Linear Regression model.
 
         """
-        predictLambda = lambda valuesToPredict : self.regressor.predict(valuesToPredict)
+        from utils.common_utils import flatten
+        predictLambda = lambda valuesToPredict : flatten(self.regressor.predict(valuesToPredict))
         return ["Multiple Linear Regression predictions", super().predict_user_input_variables(predictLambda)]
 
 
@@ -38,4 +39,6 @@ class MultipleLinearRegressor(gr.GenericRegressor):
         """Returns a comparison table for Multiple Linear Regression model.
 
         """
-        return ["Multiple Linear Regression predictions comparison", super().truncate_predictions_relevance(self.datasetManager.X_test, self.datasetManager.y_test, self.y_pred)]
+        return ["Multiple Linear Regression predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, self.y_pred)]

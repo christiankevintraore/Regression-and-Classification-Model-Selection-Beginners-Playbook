@@ -10,12 +10,12 @@ Desirable features :
 
 #### Libraries
 from sklearn.svm import SVC
-import models.classifiers.generic_classifier as gc
+from models.classifiers.generic_classifier import GenericClassifier
 
 
 
 #### Main KernelSvmClassifier class
-class KernelSvmClassifier(gc.GenericClassifier):
+class KernelSvmClassifier(GenericClassifier):
 
     def evaluate(self):
         """Applies the Kernel Support Vector Machine Classification model on the dataset.
@@ -37,4 +37,6 @@ class KernelSvmClassifier(gc.GenericClassifier):
         """Returns a comparison table for Kernel Support Vector Machine Classification model.
 
         """
-        return ["Kernel Support Vector Machine Classification predictions comparison", super().truncate_predictions_relevance(self.X_scaler.inverse_transform(self.X_test), self.datasetManager.y_test, self.y_pred)]
+        return ["Kernel Support Vector Machine Classification predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, self.y_pred)]

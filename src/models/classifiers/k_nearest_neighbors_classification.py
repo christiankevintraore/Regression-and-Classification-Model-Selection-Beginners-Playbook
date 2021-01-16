@@ -5,17 +5,19 @@ An implementation of K Nearest Neighbors Classification.
 
 Desirable features :
     - Tune the classifier input parameters for better performance.
+    - n_neighbors == int(sqrt(self.NumberOfSamples)) ??
 
 """
 
 #### Libraries
 from sklearn.neighbors import KNeighborsClassifier
-import models.classifiers.generic_classifier as gc
+from math import sqrt
+from models.classifiers.generic_classifier import GenericClassifier
 
 
 
 #### Main KNearestNeighborsClassifier class
-class KNearestNeighborsClassifier(gc.GenericClassifier):
+class KNearestNeighborsClassifier(GenericClassifier):
 
     def evaluate(self):
         """Applies the K Nearest Neighbors Classification model on the dataset.
@@ -37,4 +39,6 @@ class KNearestNeighborsClassifier(gc.GenericClassifier):
         """Returns a comparison table for K Nearest Neighbors Classification model.
 
         """
-        return ["K Nearest Neighbors Classification predictions comparison", super().truncate_predictions_relevance(self.X_test, self.datasetManager.y_test, self.y_pred)]
+        return ["K Nearest Neighbors Classification predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, self.y_pred)]

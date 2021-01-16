@@ -1,0 +1,6 @@
+numpy==1.18.5
+texttable==1.6.3
+pandas==1.0.5
+category_encoders==2.2.2
+impyute==0.0.8
+scikit_learn==0.24.0

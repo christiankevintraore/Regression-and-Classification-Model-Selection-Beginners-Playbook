@@ -11,40 +11,38 @@ Desirable features :
 
 #### Libraries
 from sklearn.svm import SVR
-import utils.dataset_manager as dm
-import models.regressors.generic_regressor as gr
+from dataset.model_selection_dataset_manager import reshape_y_set_split_data, do_feature_scaling
+from models.regressors.generic_regressor import GenericRegressor
 
 
 
 #### Main SupportVectorRegressor class
-class SupportVectorRegressor(gr.GenericRegressor):
+class SupportVectorRegressor(GenericRegressor):
 
     def evaluate(self):
         """Applies the SVR model on the dataset.
 
         """
         # Method variables definition
-        X_train, X_test, y_train, y_test = dm.reshape_y_set_split_data(self.datasetManager)
+        X_train, X_test, y_train, y_test = reshape_y_set_split_data(self.datasetManager)
         featureScaleDependentVariables = self.datasetManager.params.featureScaleDependentVariables
 
         # Feature Scaling
-        X_scaler, X_train = dm.do_feature_scaling(X_train)
+        self.X_scaler, X_train = do_feature_scaling(X_train)
         if featureScaleDependentVariables:
-            y_scaler, y_train = dm.do_feature_scaling(y_train)
+            self.y_scaler, y_train = do_feature_scaling(y_train)
         else:
-            y_scaler = None
+            self.y_scaler = None
             y_train = self.datasetManager.y_train
         
-        self.X_scaler = X_scaler
-        self.y_scaler = y_scaler
-
         # Training the SVR model on the training set
         regressor = SVR(kernel = 'rbf')
-        regressor.fit(X_train, y_train.ravel())
+        regressor.fit(X_train, y_train.to_numpy().ravel())
         self.regressor = regressor
 
         # Predicting the Test set results
-        self.y_pred = y_scaler.inverse_transform(regressor.predict(X_scaler.transform(X_test))) if featureScaleDependentVariables else regressor.predict(X_test)
+        self.y_pred = self.y_scaler.inverse_transform(regressor.predict(self.X_scaler.transform(X_test)))\
+            if featureScaleDependentVariables else regressor.predict(X_test)
         
         # Returning the process result : the regression type and the predicted dependent variables set
         return ["Support Vector Regression", self.get_r2_score(y_test, self.y_pred)]
@@ -53,8 +51,10 @@ class SupportVectorRegressor(gr.GenericRegressor):
         """Makes some predictions with Support Vector Regression model.
 
         """
-        predictLambda = lambda valuesToPredict : self.y_scaler.inverse_transform(self.regressor.predict(self.X_scaler.transform(valuesToPredict)))\
-            if self.datasetManager.params.featureScaleDependentVariables else self.regressor.predict(valuesToPredict)
+        from utils.common_utils import flatten
+        predictLambda = lambda valuesToPredict : flatten(self.y_scaler.inverse_transform(self.regressor.\
+            predict(self.X_scaler.transform(valuesToPredict)))) if self.datasetManager.params.featureScaleDependentVariables\
+                else flatten(self.regressor.predict(valuesToPredict))
         
         return ["Support Vector Regression predictions", super().predict_user_input_variables(predictLambda)]
 
@@ -64,4 +64,6 @@ class SupportVectorRegressor(gr.GenericRegressor):
         """Returns a comparison table for Support Vector Regression model.
 
         """
-        return ["Support Vector Regression predictions comparison", super().truncate_predictions_relevance(self.datasetManager.X_test, self.datasetManager.y_test, self.y_pred)]
+        return ["Support Vector Regression predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, self.y_pred)]

@@ -10,12 +10,13 @@ Desirable features :
 
 #### Libraries
 from sklearn.tree import DecisionTreeRegressor as sklDecisionTreeRegressor
-import models.regressors.generic_regressor as gr
+from models.regressors.generic_regressor import GenericRegressor
+from utils.common_utils import flatten
 
 
 
 #### Main DecisionTreeRegressor class
-class DecisionTreeRegressor(gr.GenericRegressor):
+class DecisionTreeRegressor(GenericRegressor):
 
     def evaluate(self):
         """Applies the Decision Tree Regression model on the dataset.
@@ -29,7 +30,7 @@ class DecisionTreeRegressor(gr.GenericRegressor):
         """Makes some predictions with Decision Tree Regression model.
 
         """
-        predictLambda = lambda valuesToPredict : self.regressor.predict(valuesToPredict)
+        predictLambda = lambda valuesToPredict : flatten(self.regressor.predict(valuesToPredict))
         return ["Decision Tree Regression predictions", super().predict_user_input_variables(predictLambda)]
 
 
@@ -38,4 +39,6 @@ class DecisionTreeRegressor(gr.GenericRegressor):
         """Returns a comparison table for Decision Tree Regression model.
 
         """
-        return ["Decision Tree Regression predictions comparison", super().truncate_predictions_relevance(self.datasetManager.X_test, self.datasetManager.y_test, self.y_pred)]
+        return ["Decision Tree Regression predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, flatten(self.y_pred))]

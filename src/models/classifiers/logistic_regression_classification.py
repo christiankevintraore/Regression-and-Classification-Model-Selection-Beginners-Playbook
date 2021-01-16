@@ -10,12 +10,12 @@ Desirable features :
 
 #### Libraries
 from sklearn.linear_model import LogisticRegression
-import models.classifiers.generic_classifier as gc
+from models.classifiers.generic_classifier import GenericClassifier
 
 
 
 #### Main LogisticRegressionClassifier class
-class LogisticRegressionClassifier(gc.GenericClassifier):
+class LogisticRegressionClassifier(GenericClassifier):
 
     def evaluate(self):
         """Applies the Logistic Regression Classification model on the dataset.
@@ -37,4 +37,6 @@ class LogisticRegressionClassifier(gc.GenericClassifier):
         """Returns a comparison table for Logistic Regression Classification model.
 
         """
-        return ["Logistic Regression Classification predictions comparison", super().truncate_predictions_relevance(self.X_scaler.inverse_transform(self.X_test), self.datasetManager.y_test, self.y_pred)]
+        return ["Logistic Regression Classification predictions comparison",\
+            super().get_predictions_relevance(self.datasetManager.X_test_for_predictions_relevance,\
+                self.datasetManager.y_test_for_predictions_relevance, self.y_pred)]

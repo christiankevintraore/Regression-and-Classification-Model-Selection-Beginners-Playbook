@@ -34,7 +34,7 @@ From the root directory.
 \
 Output :
 ```
-usage: regression_model_selection.py [-h] [-noHeader] [-dependentVariableColumnIndex DEPENDENTVARIABLECOLUMNINDEX] [-independentVariablesStartIndex INDEPENDENTVARIABLESSTARTINDEX]
+usage: regression_model_selection.py [-h] [-dependentVariablesColumnIndex DEPENDENTVARIABLECOLUMNINDEX] [-independentVariablesStartIndex INDEPENDENTVARIABLESSTARTINDEX]
                                      [-independentVariablesEndIndex INDEPENDENTVARIABLESENDINDEX] [-splitTestSize SPLITTESTSIZE] [-splitRandomState SPLITRANDOMSTATE] [-featureScaleDependentVariables]
                                      [-predict PREDICT [PREDICT ...]] [-predictOnly PREDICTONLY [PREDICTONLY ...]] [-showPredictionsFor SHOWPREDICTIONSFOR [SHOWPREDICTIONSFOR ...]]
                                      [-nbPredictionLinesToShow NBPREDICTIONLINESTOSHOW]
@@ -47,8 +47,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -noHeader             Indicates that there is no header in the dataset (default: False)
-  -dependentVariableColumnIndex DEPENDENTVARIABLECOLUMNINDEX
+  -dependentVariablesColumnIndex DEPENDENTVARIABLECOLUMNINDEX
                         Indicates the unique dependent variable column index (default: -1)
   -independentVariablesStartIndex INDEPENDENTVARIABLESSTARTINDEX
                         Indicates independent variables start column index (default: None)
@@ -240,7 +239,7 @@ Random Forest Regression predictions
 \
 Output :
 ```
-usage: classification_model_selection.py [-h] [-noHeader] [-dependentVariableColumnIndex DEPENDENTVARIABLECOLUMNINDEX] [-independentVariablesStartIndex INDEPENDENTVARIABLESSTARTINDEX]
+usage: classification_model_selection.py [-h] [-dependentVariablesColumnIndex DEPENDENTVARIABLECOLUMNINDEX] [-independentVariablesStartIndex INDEPENDENTVARIABLESSTARTINDEX]
                                          [-independentVariablesEndIndex INDEPENDENTVARIABLESENDINDEX] [-splitTestSize SPLITTESTSIZE] [-splitRandomState SPLITRANDOMSTATE] [-featureScaleDependentVariables]
                                          [-predict PREDICT [PREDICT ...]] [-predictOnly PREDICTONLY [PREDICTONLY ...]] [-showPredictionsFor SHOWPREDICTIONSFOR [SHOWPREDICTIONSFOR ...]]
                                          [-nbPredictionLinesToShow NBPREDICTIONLINESTOSHOW]
@@ -253,8 +252,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -noHeader             Indicates that there is no header in the dataset (default: False)
-  -dependentVariableColumnIndex DEPENDENTVARIABLECOLUMNINDEX
+  -dependentVariablesColumnIndex DEPENDENTVARIABLECOLUMNINDEX
                         Indicates the unique dependent variable column index (default: -1)
   -independentVariablesStartIndex INDEPENDENTVARIABLESSTARTINDEX
                         Indicates independent variables start column index (default: None)

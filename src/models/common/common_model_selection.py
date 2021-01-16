@@ -2,22 +2,23 @@
 ~~~~~~~~~~~~~~
 
 A common model selection class that will be extends by generic regressor and classifier.
-It's also implements commons util methods used by regressors and classifiers ; and their main processes.
+It's also implements common util methods used by regressors and classifiers ; and their main processes.
 
 """
 
 #### Libraries
-import numpy as np
-import utils.dataset_manager as dm
-from texttable import Texttable
-import os
+from pandas import DataFrame
+from dataset.dataset import Dataset
+from numpy import array, ndarray
+from dataset.model_selection_dataset_manager import ModelSelectionDatasetManager
+from utils.common_utils import reshape_second_pred_and_concatenate
 
 
 
 #### Main CommonModelSelection class
 class CommonModelSelection:
 
-    def __init__(self, datasetManager:dm.DatasetManager):
+    def __init__(self, datasetManager:ModelSelectionDatasetManager):
         """Initialize the current regressor or classifier object with the dataset manager.
 
         """
@@ -52,48 +53,47 @@ class CommonModelSelection:
         Returns a two dimensional table with each row containing the user input independent variables and a predicted dependent one.
 
         """
-        userInputVariables = self.get_user_input_for_prediction()
-        return self.reshape_y_pred_and_concatenate(userInputVariables, predictLambda(userInputVariables))
+        userInputVariables = self.datasetManager.params.get_user_input_for_prediction(self.datasetManager.independentVariablesColumnsNumber)
+        return reshape_second_pred_and_concatenate(userInputVariables,\
+            self.handle_encoded_y_pred(predictLambda(self.encode_user_input_variables(userInputVariables))))
 
-    def get_user_input_for_prediction(self):
-        """Checks and returns the user predefined independent variables table for prediction.
-
-        """
-        valuesToPredict = self.datasetManager.params.predict
-        if valuesToPredict is None:
-            raise AttributeError
-
-        X_train = self.datasetManager.X_train
-        if X_train is None:
-            raise LookupError("The model was not yet be evaluated at the moment")
-
-        independentVariablesNumber = len(X_train[0])
-        for oneSetToPredict in valuesToPredict:
-            if independentVariablesNumber != len(oneSetToPredict):
-                raise AttributeError("Invalid independent variables set to predict : {0}, expected {1} elements".format(oneSetToPredict, independentVariablesNumber))
-        
-        return valuesToPredict
-
-    def reshape_y_pred_and_concatenate(self, firstTable, secondTable):
-        """Reshapes the secondTable table (from one dimension to two) and concatenates it with the 'firstTable' table.
+    def encode_user_input_variables(self, userInputVariables):
+        """Encodes user input variables for prediction.
 
         """
-        return np.concatenate((firstTable, np.reshape(secondTable, (len(secondTable), 1))) ,1)
+        datasetManager = self.datasetManager
+        independentVariablesDataFrame = self.datasetManager.X
+        independentVariablesToEncodeDataFrame = independentVariablesDataFrame.copy().append(DataFrame(userInputVariables,\
+            columns=independentVariablesDataFrame.columns), ignore_index=True)
+        dataToPredict = datasetManager.categoricalDataPreprocessor.handle_data(Dataset(datasetManager.params)\
+            .load_data(independentVariablesToEncodeDataFrame)).data
+        return dataToPredict[len(independentVariablesDataFrame.index):len(dataToPredict.index)]
 
-    def get_new_truncated_list(self, inputList, nbFirstElementsToKeep):
-        """Truncates and returns a new list containing the 'nbFirstElementsToKeep' elements.
+    def get_predictions_relevance(self, X_test, y_test, y_pred):
+        """Returns a truncated comparison table.
 
         """
-        return inputList.copy()[:nbFirstElementsToKeep]
+        return reshape_second_pred_and_concatenate(reshape_second_pred_and_concatenate(X_test, y_test),\
+                self.handle_encoded_y_pred(get_new_truncated_list(y_pred, self.datasetManager.params.nbPredictionLinesToShow)))
 
-    def truncate_predictions_relevance(self, X_test, y_test, y_pred):
-            """Returns a truncated comparison table.
+    def handle_encoded_y_pred(self, y_pred):
+        """Decodes the input y_pred if encoded, otherwise returns the input data.
 
-            """
-            nbPredictionLinesToShow = self.datasetManager.params.nbPredictionLinesToShow
-            return self.reshape_y_pred_and_concatenate(self.reshape_y_pred_and_concatenate\
-                (self.get_new_truncated_list(X_test, nbPredictionLinesToShow), self.get_new_truncated_list(y_test, nbPredictionLinesToShow)),\
-                    self.get_new_truncated_list(y_pred, nbPredictionLinesToShow))
+        """
+        if self.datasetManager.is_y_categorical_column:
+            labelsByEncodedNumber = self.datasetManager.y_labels_by_encoded_number
+            encodedNumbers = labelsByEncodedNumber.keys()
+            return array([labelsByEncodedNumber[element] if element in encodedNumbers else element for element in y_pred])
+
+        return y_pred
+
+
+
+def get_new_truncated_list(inputList, nbFirstElementsToKeep):
+    """Truncates and returns a new list containing the 'nbFirstElementsToKeep' elements.
+
+    """
+    return inputList[:nbFirstElementsToKeep].copy()
 
 
 
@@ -126,18 +126,19 @@ def predict_from_lambda(models, predictLambda):
 
 
 def print_predictions(datasetManager, predictions, appendToDependentVariablesHeader='', additionalHeaders=None):
+    from utils.common_utils import get_text_table, get_console_window_width
     # Printing predictions
     for prediction in predictions:
         print("\n{0}".format(prediction[0]))
         predictionTexttable = get_text_table(len(prediction[1][0]))
         predictionTexttable.set_max_width(get_console_window_width())
         predictionTexttable.add_rows(datasetManager.insert_header_to_top(str_all_bidimensional_list_elements(prediction[1]), appendToDependentVariablesHeader, additionalHeaders))
-        print(predictionTexttable.draw())
+        print(predictionTexttable.draw(), "\n", sep='')
 
 
 
-def str_all_bidimensional_list_elements(oneDimensionalList):
-    return [[str(element) for element in elements] for elements in oneDimensionalList]
+def str_all_bidimensional_list_elements(bidimensionalList):
+    return [[str(element) for element in elements] for elements in bidimensionalList]
 
 
 
@@ -162,16 +163,12 @@ def get_models_for_prediction(modelName, modelsDictionary, codesOfDesiredModels)
 
 
 
-def get_text_table(nbColumn):
-    result = Texttable()
-    result.set_max_width(get_console_window_width())
-    result.set_cols_align(['c'] * nbColumn)
-    result.set_cols_valign(['m'] * nbColumn)
-    result.set_cols_dtype(['t'] * nbColumn)
+def build_model_codes_with_descriptions(modelCodesList, modelDescriptionByCodes):
+    """Returns a list of the input imputation strategies with descriptions.
+
+    """
+    result = []
+    for modelCode in modelCodesList:
+        result.append(modelCode + ' (' + modelDescriptionByCodes[modelCode] + ')')
+
     return result
-
-
-
-def get_console_window_width():
-    rows, columns = os.popen('stty size', 'r').read().split()
-    return int(columns)
