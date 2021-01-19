@@ -11,7 +11,11 @@ Desirable features :
 #### Libraries
 from pandas import read_csv, DataFrame
 from utils.input.dataset_input_parameters import DatasetInputParameters
-from utils.common_utils import is_int
+from utils.common_utils import is_int, is_url
+from utils.online_file_manager import OnlineFileManager
+
+# Constants
+NB_LINES_TO_DETERMINE_IF_HAS_HEADER = 5
 
 
 
@@ -26,6 +30,9 @@ class Dataset:
         """
         self.params = params
         self.allHeaders = None
+        datasetFilePath = self.params.datasetFilePath
+        self.__isOnlineDataset = is_url(datasetFilePath)
+        self.__onlineFileManager = OnlineFileManager(datasetFilePath)
 
     def load_data(self, existingOne:DataFrame=None):
         """Loads the dataset or assigns the existing one to the data variable.
@@ -34,14 +41,25 @@ class Dataset:
         if existingOne is not None:
             self.data = existingOne
         else:
-            self.data = read_csv(self.params.datasetFilePath) if self.has_defined_header() else read_csv(self.params.datasetFilePath, header=None)
+            inputStream = self.__onlineFileManager.get_input_stream() if self.__isOnlineDataset else self.params.datasetFilePath
+            self.data = read_csv(inputStream) if self.has_defined_header() else read_csv(inputStream, header=None)
+
+            self.__isOnlineDataset = None
+            self.__onlineFileManager = None
         
         return self
 
     def has_defined_header(self):
         from csv import Sniffer
+
+        datasetFilePathFirstLines = self.__onlineFileManager.read_lines(NB_LINES_TO_DETERMINE_IF_HAS_HEADER)\
+            if self.__isOnlineDataset else self.__read_local_file(NB_LINES_TO_DETERMINE_IF_HAS_HEADER)
+
+        return Sniffer().has_header(''.join(datasetFilePathFirstLines))
+    
+    def __read_local_file(self, nbLines):
         from itertools import islice
-        return Sniffer().has_header(''.join(islice(open(self.params.datasetFilePath), 5)))
+        return list(islice(open(self.params.datasetFilePath), nbLines))
 
     def get_all_headers(self):
         """Returns the dataset headers.

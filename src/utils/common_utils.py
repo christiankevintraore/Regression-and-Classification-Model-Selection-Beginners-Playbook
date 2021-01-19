@@ -6,7 +6,7 @@ A collection of common util methods used by main processes.
 """
 
 #### Libraries
-from numpy import concatenate, reshape, ndarray
+from numpy import concatenate, reshape
 from os import popen
 from texttable import Texttable
 
@@ -104,3 +104,9 @@ def flatten(listOfElementsList:list):
         return [element for sublist in listOfElementsList for element in sublist]
     except:
         return listOfElementsList
+
+
+
+def is_url(filePath):
+    from validators import url
+    return url(filePath)
