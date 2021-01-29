@@ -9,9 +9,12 @@ Thanks a lot, I really enjoyed it -:)\
 Also notice that the datasets, for test purpose, were took from the provided resources of this course.
 
 ## Main upcoming features
-* Correcting of the usage of Confusion Matrix for Classification synthesis table (The codes are in 'Data_Preprocessing_Implementation' branche, writing the wiki).
-* Direct data manipulation and exportation through input parameters (The codes are in 'Data_Preprocessing_Implementation' branche, writing the wiki).
-* Data preprocessing : handling missing data and categorical features encoding through several predefined algorithms (The codes are in 'Data_Preprocessing_Implementation' branche, writing the wiki).
+
+* Next merge into 'master' branch, all the updates are in 'Data_Preprocessing_Implementation' branch. I'm writing the wiki :
+1. Correcting of the usage of Confusion Matrix for Classification synthesis table.
+2. Direct data manipulation and exportation through input parameters.
+3. Data preprocessing : handling missing data and categorical features encoding through several predefined algorithms.
+
 * Automatic tuning of Regressors and Classifiers input parameters to find the best accuracy scores (next big push on April or May).
 
 ## Dataset Template
