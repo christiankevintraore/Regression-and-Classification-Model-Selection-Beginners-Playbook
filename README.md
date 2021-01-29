@@ -9,9 +9,10 @@ Thanks a lot, I really enjoyed it -:)\
 Also notice that the datasets, for test purpose, were took from the provided resources of this course.
 
 ## Main upcoming features
-* Direct data manipulation and exportation through input parameters (in few days).
-* Data preprocessing : handling missing data and categorical features encoding through several predefined algorithms (in few days).
-* Automatic tuning of Regressors and Classifiers input parameters to find the best accuracy scores (next big push on February or March).
+* Correcting of the usage of Confusion Matrix for Classification synthesis table (The codes are in 'Data_Preprocessing_Implementation' branche, writing the wiki).
+* Direct data manipulation and exportation through input parameters (The codes are in 'Data_Preprocessing_Implementation' branche, writing the wiki).
+* Data preprocessing : handling missing data and categorical features encoding through several predefined algorithms (The codes are in 'Data_Preprocessing_Implementation' branche, writing the wiki).
+* Automatic tuning of Regressors and Classifiers input parameters to find the best accuracy scores (next big push on April or May).
 
 ## Dataset Template
 * *To work properly with this tool, your dataset should have consecutive independent variable columns ; and only one dependant variable column.*
