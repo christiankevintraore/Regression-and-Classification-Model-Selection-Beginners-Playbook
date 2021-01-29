@@ -28,6 +28,7 @@ class OnlineFileManager:
         return self.fileContent
     
     def read_lines(self, nbLines):
+        #TODO Replace by a regex check
         result = []
         retrievedLines = 0
         currentLine = ''

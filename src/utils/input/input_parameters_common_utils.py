@@ -33,15 +33,22 @@ class ColumnsAndOperationsParser:
             operations.append(operationsAndColumns[i].strip())
             i += 1
 
-        return self.get_all_selected_columns(selectedDataset, [operationsAndColumns[0].strip().split()], allColumnsAreSelectable), operations
+        return self.get_all_selected_columns(selectedDataset, self.get_columns_definitions(operationsAndColumns), allColumnsAreSelectable), operations
+
+    def get_columns_definitions(self, inputColumn):
+        """Parse columns definitions.
+
+        """
+        #TODO Parse by a regex
+        return [inputColumn[0].strip().split()]
 
     def get_all_selected_columns(self, dataset, selectedColumnsList, allColumnsAreSelectable=True):
         """Returns a list of indexes corresponding to the input command line columns list.
 
         """
         allSelectedColumnsIndexes = set()
-        for selectedColumnsList in selectedColumnsList:
-            allSelectedColumnsIndexes.update(self.get_selected_columns(dataset, selectedColumnsList, allColumnsAreSelectable))
+        for selectedColumns in selectedColumnsList:
+            allSelectedColumnsIndexes.update(self.get_selected_columns(dataset, selectedColumns, allColumnsAreSelectable))
         
         return sorted(allSelectedColumnsIndexes)
 

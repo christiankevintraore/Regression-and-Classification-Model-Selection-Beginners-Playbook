@@ -79,6 +79,9 @@ def main():
     # Print evaluations
     print_evaluations(evaluations)
 
+    # Print Confusion Matrix
+    # TODO
+
     modelName = 'classifier'
     # Predict from users input
     if modelSelectionInputParameters.predict is not None:
@@ -99,13 +102,28 @@ def print_evaluations(evaluations):
     # Printing evaluations
     evaluationsToPrint = []
     for evaluation in evaluations:
-        evaluationsToPrint.append([evaluation[0], "{:.20f}".format(evaluation[2]), str(evaluation[1][0][0]), str(evaluation[1][0][1]), str(evaluation[1][1][1]), str(evaluation[1][1][0]), str(evaluation[1][0][0] + evaluation[1][1][1]), str(evaluation[1][0][1] + evaluation[1][1][0])])
+        nbGoodPredictions, nbBadPredictions = get_number_of_good_and_bad_predictions(evaluation[1])
+        evaluationsToPrint.append([evaluation[0], "{:.20f}".format(evaluation[2]), str(nbGoodPredictions), str(nbBadPredictions)])
 
-    predictionTexttable = get_text_table(8)
+    predictionTexttable = get_text_table(4)
     predictionTexttable.set_max_width(get_console_window_width())
-    evaluationsToPrint.insert(0, ["Classification Model", "Accuracy Score", "Number of True Positives", "Number of False Positives", "Number of True Negatives", "Number of False Negatives", "Number of True Predictions", "Number of False Predictions"])
+    evaluationsToPrint.insert(0, ["Classification Model", "Accuracy Score", "Number of Good Predictions", "Number of Bad Predictions"])
     predictionTexttable.add_rows(evaluationsToPrint)
     print(predictionTexttable.draw(), "\n", sep='')
+
+
+
+def get_number_of_good_and_bad_predictions(confusionMatrix):
+    nbGoodPredictions = 0
+    nbBadPredictions = 0
+    matrixLength = len(confusionMatrix)
+    for linesIndex in range(matrixLength):
+        for columnsIndex in range(matrixLength):
+            if linesIndex == columnsIndex:
+                nbGoodPredictions += confusionMatrix[linesIndex][columnsIndex]
+            else:
+                nbBadPredictions += confusionMatrix[linesIndex][columnsIndex]
+    return nbGoodPredictions, nbBadPredictions
 
 
 
